@@ -1,0 +1,46 @@
+<?php
+
+include_once "../base220.php";
+
+$table=$_POST['table'];
+$db=new DB($table);
+
+foreach($_POST['id'] as $key=>$id){
+    if(!empty($_POST['del']) && in_array($id,$_POST['del'])){
+        $db->del($id);
+    }else{
+        $data=$db->find($id);
+        
+        switch($table){
+            case "title":
+                $data['text']=$_POST['text'][$key];
+                $data['sh']=($id==$_POST['sh'])?1:0;
+            break;
+            case "admin":
+                $data['acc']=$_POST['acc'][$key];
+                $data['pw']=$_POST['pw'][$key];
+            break;
+            case "sign":
+                $data['date']=$_POST['date'][$key];
+                $data['qual']=$_POST['qual'][$key];
+                $data['rule']=$_POST['rule'][$key];
+                $data['enroll']=$_POST['enroll'][$key];
+            break;
+            case "menu":
+                $data['name']=$_POST['name'][$key];
+                $data['href']=$_POST['href'][$key];
+                $data['sh']=(in_array($id,$_POST['sh']))?1:0;
+            break;
+            default:
+                $data['text']=$_POST['text'][$key];
+                $data['sh']=(in_array($id,$_POST['sh']))?1:0;
+            break;
+        }
+
+        $db->save($data);
+    }
+}
+
+    to("../admin.php?do=$table");
+
+?>
